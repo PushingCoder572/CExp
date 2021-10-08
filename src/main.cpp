@@ -6,9 +6,6 @@
 #include <Windows.h>
 #include <cstdlib>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "STB/std_image.h"
-
 #include "Renderer.h"
 
 #include <GLFW/glfw3.h>
@@ -36,10 +33,11 @@ int main(void)
     if (!glfwInit())
         return -1;
 
-    unsigned int windowHeight = glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
+    unsigned int windowHeight = int(glfwGetVideoMode(glfwGetPrimaryMonitor())->height/4);
+    std::cout << float(windowHeight) << std::endl;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(windowHeight/2, windowHeight/2, "Game of Life", nullptr, nullptr);
+    window = glfwCreateWindow(windowHeight, windowHeight, "Game of Life", nullptr, nullptr);
     
     if (!window)
     {
@@ -71,7 +69,7 @@ int main(void)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         VertexArray va;
-        VertexBuffer vb(verts, 4 * 4 * sizeof(float));
+        VertexBuffer vb(verts, 4 * 5 * sizeof(float));
         VertexBufferLayout layout;
         layout.Push(GL_FLOAT, 2);
         layout.Push(GL_FLOAT, 2);
@@ -88,9 +86,9 @@ int main(void)
         Shader render_shader = Shader(vertexShaderSource, renderFragmentShaderSource);
         render_shader.Unbind();
 
-        Renderbuffer prevRbo = Renderbuffer();
+        Renderbuffer prevRbo = Renderbuffer(windowHeight, windowHeight);
 
-        Texture prevTexture(windowHeight/2, windowHeight/2);
+        Texture prevTexture(windowHeight, windowHeight);
 
         Framebuffer prevFbo = Framebuffer(prevTexture.GetId(), prevRbo.GetId());
 
@@ -98,9 +96,9 @@ int main(void)
         prevTexture.Unbind();
         prevRbo.Unbind();
 
-        Renderbuffer nextRbo = Renderbuffer();
+        Renderbuffer nextRbo = Renderbuffer(windowHeight, windowHeight);
 
-        Texture nextTexture(windowHeight/2, windowHeight/2);
+        Texture nextTexture(windowHeight, windowHeight);
 
         Framebuffer nextFbo = Framebuffer(nextTexture.GetId(), nextRbo.GetId());
 
@@ -134,6 +132,7 @@ int main(void)
             simple_shader.Add1IntUniform("u_Color", 0);
             simple_shader.Add2FloatUniform("u_MousePos", float(xPos), float(yPos));
             simple_shader.Add1IntUniform("u_IsClick", isClick);
+            simple_shader.Add2FloatUniform("u_screenSize", float(windowHeight), float(windowHeight));
     
             renderer.Draw(va, ib, simple_shader);
 
@@ -149,6 +148,7 @@ int main(void)
             {
                 gol_shader.Bind();
                 gol_shader.Add1IntUniform("u_Color", 0);
+                gol_shader.Add2FloatUniform("u_screenSize", float(windowHeight), float(windowHeight));
 
                 renderer.Draw(va, ib, gol_shader);
             }
@@ -158,6 +158,7 @@ int main(void)
                 simple_shader.Add1IntUniform("u_Color", 0);
                 simple_shader.Add2FloatUniform("u_MousePos", float(xPos), float(yPos));
                 simple_shader.Add1IntUniform("u_IsClick", isClick);
+                simple_shader.Add2FloatUniform("u_screenSize", float(windowHeight), float(windowHeight));
 
                 renderer.Draw(va, ib, simple_shader);
             }

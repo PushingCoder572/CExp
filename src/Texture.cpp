@@ -1,7 +1,5 @@
 #include "Texture.h"
 #include "Renderer.h"
-#include "STB/std_image.h"
-
 #include <iostream>
 
 Texture::Texture(unsigned int width, unsigned int height)

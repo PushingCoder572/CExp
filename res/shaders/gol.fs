@@ -4,8 +4,9 @@ layout (location=0) out vec4 FragColor;
 in vec2 v_TexCoord;
 
 uniform sampler2D u_Color;
+uniform vec2 u_screenSize;
 
-int edgeCheck(const float offset)
+int edgeCheck(float offset)
 {
     int posSum = 0;
 
@@ -58,7 +59,7 @@ int edgeCheck(const float offset)
     return posSum;
 }
 
-int nCheck(const float offset, const int pos)
+int nCheck(float offset, const int pos)
 {
     float sum = 0;
 
@@ -136,7 +137,7 @@ int nCheck(const float offset, const int pos)
 
 void main()
 {
-    const float offset = 1.0 / 720.0;
+    float offset = 1.0 / u_screenSize.x;
     
     vec4 live = vec4(1.0, 0.0, 1.0, 1.0);
     vec4 dead = vec4(0.0, 0.0, 0.0, 1.0);

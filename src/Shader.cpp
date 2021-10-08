@@ -97,6 +97,13 @@ void Shader::Add1IntUniform(const char* name, int v1)
     glUniform1i(location, v1);
 }
 
+void Shader::Add1FloatUniform(const char* name, float v1)
+{
+    Bind();
+    int location = glGetUniformLocation(RenderId, name);
+    glUniform1f(location, v1);
+}
+
 void Shader::Add2FloatUniform(const char* name, float v1, float v2)
 {
     Bind();

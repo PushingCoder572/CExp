@@ -5,7 +5,7 @@ class Renderbuffer
 private:
     unsigned int RenderId;
 public:
-    Renderbuffer();
+    Renderbuffer(unsigned int Width, unsigned int Height);
     ~Renderbuffer();
 
     void Bind() const;
